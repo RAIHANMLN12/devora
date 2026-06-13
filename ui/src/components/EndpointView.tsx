@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SchemaViewer } from './SchemaViewer.js';
+import { SandboxPanel } from './SandboxPanel.js';
 
 interface EndpointViewProps {
   path: string;
@@ -20,6 +21,7 @@ const METHOD_BADGE: Record<string, { class: string; label: string }> = {
 
 export function EndpointView({ path, method, operation }: EndpointViewProps) {
   if (!operation) return <div className="empty">Operation not found.</div>;
+  const [showTest, setShowTest] = useState(false);
 
   const badge = METHOD_BADGE[method] || { class: '', label: method.toUpperCase() };
   const params = operation.parameters || [];
@@ -34,7 +36,12 @@ export function EndpointView({ path, method, operation }: EndpointViewProps) {
       <div className="endpoint-header">
         <span className={`endpoint-badge ${badge.class}`}>{badge.label}</span>
         <code className="endpoint-path">{path}</code>
+        <button className={`btn-test ${showTest ? 'active' : ''}`} onClick={() => setShowTest(!showTest)}>
+          {showTest ? 'Close Test' : 'Test'}
+        </button>
       </div>
+
+      {showTest && <SandboxPanel path={path} method={method} operation={operation} />}
 
       {operation.summary && <p className="endpoint-summary-text">{operation.summary}</p>}
       {operation.description && <p className="endpoint-description">{operation.description}</p>}

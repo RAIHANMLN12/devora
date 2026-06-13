@@ -1,11 +1,39 @@
+import { resolve } from 'path';
+import { existsSync } from 'fs';
 import type { Command } from 'commander';
-import { logger } from '../utils/index.js';
+import { logger, resolvePort } from '../utils/index.js';
+import { loadConfig } from '../config/index.js';
+import { startDocsServer } from '../server/index.js';
 
-export function handleServe(options: { port?: number }): void {
+export async function handleServe(options: { port?: number }): Promise<void> {
+  const cwd = process.cwd();
+  const config = await loadConfig(cwd);
+  const port = resolvePort(options.port, config.docs.port, 3456);
+  const specPath = resolve(cwd, '.devora/openapi.json');
+
+  if (!existsSync(specPath)) {
+    logger.heading('Devora Serve');
+    logger.error('No OpenAPI spec found. Run `devora scan .` first.');
+    return;
+  }
+
   logger.heading('Devora Serve');
-  logger.info('Unified docs + sandbox server coming in Phase 2 & 3');
-  if (options.port) logger.info(`Port: ${options.port}`);
-  logger.info('Run `devora docs` and `devora sandbox` separately in the meantime');
+
+  const server = await startDocsServer({
+    port,
+    specPath,
+    sandbox: {
+      mode: config.sandbox.mock ? 'mock' : 'proxy',
+      proxyTarget: config.sandbox.proxyTarget === 'auto' ? undefined : config.sandbox.proxyTarget,
+    },
+    open: true,
+  });
+
+  logger.info(`Docs:    http://localhost:${port}`);
+  logger.info(`Sandbox: http://localhost:${port} (use the Test button on any endpoint)`);
+
+  process.on('SIGINT', () => { server.close(); process.exit(0); });
+  process.on('SIGTERM', () => { server.close(); process.exit(0); });
 }
 
 export function registerServe(program: Command): void {
@@ -13,7 +41,7 @@ export function registerServe(program: Command): void {
     .command('serve')
     .description('Run documentation and sandbox together')
     .option('-p, --port <number>', 'Custom port')
-    .action((options: { port?: number }) => {
-      handleServe(options);
+    .action(async (options: { port?: number }) => {
+      await handleServe(options);
     });
 }

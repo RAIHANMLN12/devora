@@ -1,7 +1,9 @@
 import { resolve } from 'path';
 import type { Command } from 'commander';
-import { logger, createSpinner } from '../utils/index.js';
+import { logger, createSpinner, resolvePort } from '../utils/index.js';
 import { scan as runScan } from '../scanner/index.js';
+import { loadConfig } from '../config/index.js';
+import { startDocsServer } from '../server/index.js';
 
 export async function handleScan(
   path: string,
@@ -25,6 +27,18 @@ export async function handleScan(
       logger.success(`LLM enrichment: ${result.enrichedCount}/${result.totalCount} routes enriched (${result.llmProvider}/${result.llmModel})`);
     } else if (result.totalCount > 0) {
       logger.info('LLM enrichment: not available (set LLM_API_KEY or OPENAI_API_KEY in .env to enable)');
+    }
+
+    // --serve: automatically start docs server
+    if (options.serve) {
+      const config = await loadConfig(cwd);
+      const port = resolvePort(undefined, config.docs.port, 3456);
+      const specPath = resolve(cwd, '.devora/openapi.json');
+      logger.heading('Starting Documentation Server');
+      const server = await startDocsServer({ port, specPath, open: true });
+      process.on('SIGINT', () => { server.close(); process.exit(0); });
+      process.on('SIGTERM', () => { server.close(); process.exit(0); });
+      return; // keep process alive
     }
 
     logger.heading('Next Steps');

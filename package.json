@@ -1,6 +1,6 @@
 {
   "name": "devora-cli",
-  "version": "0.1.0-alpha",
+  "version": "0.1.0-alpha.1",
   "description": "Scan, document, and test any API repository — one tool to document and test any API codebase.",
   "bin": {
     "devora": "build/index.js"

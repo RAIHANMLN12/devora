@@ -2,7 +2,7 @@
 
 > **Scan, document, and test any API repository** — one CLI tool to document and test any API codebase.
 
-[![CI](https://github.com/anomalyco/devora/actions/workflows/ci.yml/badge.svg)](https://github.com/anomalyco/devora/actions/workflows/ci.yml)
+[![CI](https://github.com/RAIHANMLN12/devora/actions/workflows/ci.yml/badge.svg)](https://github.com/RAIHANMLN12/devora/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/devora-cli.svg)](https://www.npmjs.com/package/devora-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -125,7 +125,7 @@ Devora generates:
 ## Development
 
 ```bash
-git clone https://github.com/anomalyco/devora.git
+git clone https://github.com/RAIHANMLN12/devora.git
 cd devora
 npm install
 npm run build
@@ -135,7 +135,7 @@ npm test
 ## Links
 
 - **npm**: https://www.npmjs.com/package/devora-cli
-- **GitHub**: https://github.com/anomalyco/devora
+- **GitHub**: https://github.com/RAIHANMLN12/devora
 
 ## License
 

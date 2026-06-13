@@ -13,12 +13,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anomalyco/devora.git"
+    "url": "git+https://github.com/RAIHANMLN12/devora.git"
   },
   "bugs": {
-    "url": "https://github.com/anomalyco/devora/issues"
+    "url": "https://github.com/RAIHANMLN12/devora/issues"
   },
-  "homepage": "https://github.com/anomalyco/devora",
+  "homepage": "https://github.com/RAIHANMLN12/devora",
   "author": "anomalyco",
   "scripts": {
     "build": "node scripts/build.js",

@@ -36,6 +36,9 @@ async function main() {
       process.exit(1);
     }
     console.log('Build complete → build/index.js');
+
+    // Build UI
+    await import('./build-ui.js');
   }
 }
 

@@ -12,7 +12,7 @@ export async function handleScan(
   spinner.start();
 
   try {
-    const result = await runScan(cwd);
+    const result = await runScan(cwd, { llm: options.llm });
 
     spinner.succeed(
       `Found ${result.routesCount} routes across ${result.filesCount} file${result.filesCount !== 1 ? 's' : ''}`
@@ -20,6 +20,12 @@ export async function handleScan(
 
     logger.success(`Detected: ${result.framework} (${result.language})`);
     logger.success(`Generated OpenAPI spec → ${result.outputPath}`);
+
+    if (result.enrichedCount > 0) {
+      logger.success(`LLM enrichment: ${result.enrichedCount}/${result.totalCount} routes enriched (${result.llmProvider}/${result.llmModel})`);
+    } else if (result.totalCount > 0) {
+      logger.info('LLM enrichment: not available (set LLM_API_KEY or OPENAI_API_KEY in .env to enable)');
+    }
 
     logger.heading('Next Steps');
     logger.info('Run `devora docs --open` to view interactive documentation');

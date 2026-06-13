@@ -5,11 +5,13 @@ import { loadConfig } from '../config/index.js';
 import { getExtractor } from './extractors/index.js';
 import { inferRouteSchemas } from './inferencer/index.js';
 import { buildOpenApiSpec, writeOpenApiSpec } from './builder/index.js';
+import { enrichRoutes } from '../llm/index.js';
 import type { SupportedFramework, SupportedLanguage } from '../types/index.js';
 
 export interface ScanOptions {
   include?: string[];
   exclude?: string[];
+  llm?: boolean;
 }
 
 export interface ScanSummary {
@@ -20,6 +22,8 @@ export interface ScanSummary {
   outputPath: string;
   enrichedCount: number;
   totalCount: number;
+  llmProvider?: string;
+  llmModel?: string;
 }
 
 export async function scan(cwd: string, options?: ScanOptions): Promise<ScanSummary> {
@@ -44,7 +48,14 @@ export async function scan(cwd: string, options?: ScanOptions): Promise<ScanSumm
   const routes = extractor(includePatterns);
   const filesCount = new Set(routes.map((r) => r.filePath)).size;
 
-  const enrichedRoutes = inferRouteSchemas(routes);
+  let enrichedRoutes = inferRouteSchemas(routes);
+
+  const llmConfig = options?.llm === false
+    ? { ...config.llm, enabled: false }
+    : (options?.llm === true ? { ...config.llm, enabled: true } : config.llm);
+
+  const { routes: llmRoutes, stats } = await enrichRoutes(enrichedRoutes, llmConfig, cwd);
+  enrichedRoutes = llmRoutes;
 
   const title = config.docs.title === 'auto'
     ? `${framework.charAt(0).toUpperCase() + framework.slice(1)} API`
@@ -66,7 +77,9 @@ export async function scan(cwd: string, options?: ScanOptions): Promise<ScanSumm
     framework,
     language,
     outputPath,
-    enrichedCount: 0,
+    enrichedCount: stats.enriched,
     totalCount: enrichedRoutes.length,
+    llmProvider: stats.provider !== 'none' ? stats.provider : undefined,
+    llmModel: stats.model !== 'none' ? stats.model : undefined,
   };
 }

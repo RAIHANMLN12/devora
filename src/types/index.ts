@@ -136,4 +136,5 @@ export interface OpenApiSchema {
   required?: string[];
   description?: string;
   nullable?: boolean;
+  enum?: string[];
 }

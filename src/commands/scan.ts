@@ -1,31 +1,34 @@
 import { resolve } from 'path';
 import type { Command } from 'commander';
-import { logger } from '../utils/index.js';
-import { loadConfig } from '../config/index.js';
-import { detectProject } from '../detector/index.js';
+import { logger, createSpinner } from '../utils/index.js';
+import { scan as runScan } from '../scanner/index.js';
 
 export async function handleScan(
   path: string,
   options: { serve?: boolean; output?: string; llm?: boolean }
 ): Promise<void> {
   const cwd = resolve(process.cwd(), path);
-  const config = await loadConfig(cwd);
-  const detection = detectProject(cwd);
+  const spinner = createSpinner('Scanning project...');
+  spinner.start();
 
-  logger.heading('Devora Scan');
-  if (detection) {
-    logger.success(`Detected: ${detection.framework} (${detection.language})`);
-  } else {
-    logger.warn('Could not detect a supported framework');
-    logger.info('Run `devora init` to set up configuration');
+  try {
+    const result = await runScan(cwd);
+
+    spinner.succeed(
+      `Found ${result.routesCount} routes across ${result.filesCount} file${result.filesCount !== 1 ? 's' : ''}`
+    );
+
+    logger.success(`Detected: ${result.framework} (${result.language})`);
+    logger.success(`Generated OpenAPI spec → ${result.outputPath}`);
+
+    logger.heading('Next Steps');
+    logger.info('Run `devora docs --open` to view interactive documentation');
+    logger.info('Run `devora sandbox` to test endpoints interactively');
+    logger.info('Run `devora serve` to run docs + sandbox together');
+  } catch (err) {
+    spinner.fail('Scan failed');
+    logger.error(err instanceof Error ? err.message : String(err));
   }
-
-  logger.info('Scanner coming in Phase 1');
-  logger.info(`Scan path: ${cwd}`);
-  logger.info(`Framework: ${config.scan.framework}`);
-  if (options.llm) logger.info('LLM enrichment: enabled');
-  if (options.serve) logger.info('Auto-serve: enabled');
-  if (options.output) logger.info(`Output: ${options.output}`);
 }
 
 export function registerScan(program: Command): void {

@@ -8,7 +8,7 @@ const CONFIG_MODULE_NAME = 'devora';
 const defaultConfig: DevoraConfig = {
   version: 1,
   scan: {
-    include: ['src/**/*.js', 'src/**/*.ts', 'routes/**/*.js'],
+    include: ['src/**/*.js', 'src/**/*.ts', 'routes/**/*.js', '*.js', 'app.ts', 'index.ts'],
     exclude: ['**/*.test.*', '**/node_modules/**', '**/dist/**'],
     framework: 'auto',
   },

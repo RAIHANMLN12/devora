@@ -3,7 +3,7 @@
 > **Scan, document, and test any API repository** — one CLI tool to document and test any API codebase.
 
 [![CI](https://github.com/anomalyco/devora/actions/workflows/ci.yml/badge.svg)](https://github.com/anomalyco/devora/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/devora.svg)](https://www.npmjs.com/package/devora)
+[![npm version](https://img.shields.io/npm/v/devora-cli.svg)](https://www.npmjs.com/package/devora-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Devora automatically generates beautiful, interactive API documentation from your source code — no annotations, no config, no setup. It scans your routes, infers schemas, and serves a real-time documentation UI with an interactive testing sandbox.
@@ -12,10 +12,10 @@ Devora automatically generates beautiful, interactive API documentation from you
 
 ```bash
 # Install globally
-npm install -g devora
+npm install -g devora-cli
 
 # Or use directly via npx
-npx devora
+npx devora-cli
 
 # Scan your project
 cd my-api
@@ -131,6 +131,11 @@ npm install
 npm run build
 npm test
 ```
+
+## Links
+
+- **npm**: https://www.npmjs.com/package/devora-cli
+- **GitHub**: https://github.com/anomalyco/devora
 
 ## License
 

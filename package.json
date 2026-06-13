@@ -1,9 +1,9 @@
 {
-  "name": "devora",
+  "name": "devora-cli",
   "version": "0.1.0-alpha",
   "description": "Scan, document, and test any API repository — one tool to document and test any API codebase.",
   "bin": {
-    "devora": "./build/index.js"
+    "devora": "build/index.js"
   },
   "type": "module",
   "main": "./build/index.js",
@@ -18,7 +18,7 @@
   "bugs": {
     "url": "https://github.com/anomalyco/devora/issues"
   },
-  "homepage": "https://devora.sh",
+  "homepage": "https://github.com/anomalyco/devora",
   "author": "anomalyco",
   "scripts": {
     "build": "node scripts/build.js",

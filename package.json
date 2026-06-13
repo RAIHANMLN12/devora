@@ -6,16 +6,28 @@
     "devora": "./build/index.js"
   },
   "type": "module",
+  "main": "./build/index.js",
+  "types": "./src/types/index.ts",
   "engines": {
     "node": ">=18"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anomalyco/devora.git"
+  },
+  "bugs": {
+    "url": "https://github.com/anomalyco/devora/issues"
+  },
+  "homepage": "https://devora.sh",
+  "author": "anomalyco",
   "scripts": {
     "build": "node scripts/build.js",
     "dev": "node scripts/build.js --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepack": "npm run build"
   },
   "files": [
     "build/",
@@ -28,7 +40,11 @@
     "cli",
     "openapi",
     "express",
-    "fastapi"
+    "fastapi",
+    "fastify",
+    "flask",
+    "swagger",
+    "api-docs"
   ],
   "license": "MIT",
   "dependencies": {

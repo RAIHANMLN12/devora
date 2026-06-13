@@ -8,6 +8,8 @@ import { buildOpenApiSpec, writeOpenApiSpec } from './builder/index.js';
 import { enrichRoutes } from '../llm/index.js';
 import type { SupportedFramework, SupportedLanguage } from '../types/index.js';
 
+const PYTHON_INCLUDE_PATTERNS = ['**/*.py', '*.py', 'app.py', 'main.py'];
+
 export interface ScanOptions {
   include?: string[];
   exclude?: string[];
@@ -42,13 +44,14 @@ export async function scan(cwd: string, options?: ScanOptions): Promise<ScanSumm
 
   const extractor = getExtractor(framework);
 
-  const includePatterns = (options?.include ?? config.scan.include)
+  const defaults = language === 'python' ? PYTHON_INCLUDE_PATTERNS : config.scan.include;
+  const includePatterns = (options?.include ?? defaults)
     .map((p) => resolve(cwd, p));
 
   const routes = extractor(includePatterns);
   const filesCount = new Set(routes.map((r) => r.filePath)).size;
 
-  let enrichedRoutes = inferRouteSchemas(routes);
+  let enrichedRoutes = language === 'python' ? routes : inferRouteSchemas(routes);
 
   const llmConfig = options?.llm === false
     ? { ...config.llm, enabled: false }
